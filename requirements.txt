@@ -1,0 +1,9 @@
+pip install pyttsx3
+pip install SpeechRecognition
+pip install pyaudio
+pip install pyautogui
+pip install tensorflow
+pip install requirements.txt
+pip install psutil
+
+RUTH_ID = "7NcHAzFqfCpxFyONh7M8"
