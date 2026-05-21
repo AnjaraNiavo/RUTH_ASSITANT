@@ -5,5 +5,5 @@ pip install pyautogui
 pip install tensorflow
 pip install requirements.txt
 pip install psutil
-
-RUTH_ID = "7NcHAzFqfCpxFyONh7M8"
+pip install elevenlabs requests
+pip install python-dotenv

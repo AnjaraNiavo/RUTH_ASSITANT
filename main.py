@@ -14,30 +14,46 @@ import random
 import numpy as np
 import psutil
 
-'''from elevenlabs import generate, play
+from elevenlabs import generate, play
 from elevenlabs import set_api_key
-from api_key import api_key_data
-'''
+from api_key import ELEVENLABS_API_KEY
+
 from os import system
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 
-#set_api_key(api__key_data)
+set_api_key(ELEVENLABS_API_KEY)
 
 
-with open("intents.json") as file:
+with open("json/intents.json") as file:
     data = json.load(file)
 
 
-model = load_model("chat_models.h5")
+model = load_model("model/chat_models.h5")
 
-with open("tokenizer.pkl","rb") as f:
+with open("model/tokenizer.pkl","rb") as f:
     tokenizer = pickle.load(f)
 
-with open("label_encoder.pkl","rb") as encoder_file:
+with open("model/label_encoder.pkl","rb") as encoder_file:
     label_encoder = pickle.load(encoder_file)
+
+def engine_talk(text):
+
+    try:
+        audio = generate(
+            text = text,
+            voice= "7NcHAzFqfCpxFyONh7M8",
+            model= "eleven_multilingual_v2",
+            
+        )
+        play(audio)
+    
+    except Exception as e:
+        print("Erreur ElevenLabs",e)
+
+        speak(text)
 
 
 def initialize_engine ():
@@ -118,39 +134,39 @@ def wishMe():
     day = call_day()
 
     if (hour >= 0) and (hour <= 12) and ('AM' in t):
-        speak(f"Good morning Sir, it's {day} and the time is {t}")
+        engine_talk(f"Good morning Sir, it's {day} and the time is {t}")
 
     elif(hour >= 12) and (hour <= 16) and ('AM' in t):
 
-        speak(f"Good afternoon Sir, it's {day} and the time is {t}")
+        engine_talk(f"Good afternoon Sir, it's {day} and the time is {t}")
 
     else:
-        speak(f"Good evening Sir, it's {day} and the time is {t}")
+        engine_talk(f"Good evening Sir, it's {day} and the time is {t}")
 
 
 def social_media(command):
     if 'facebook' in command:
-        speak(f'Opening your facebook')
+        engine_talk(f'Opening your facebook')
         print(f"Facebook is opening")
         webbrowser.open("https://www.facebook.com/")
 
     elif 'youtube' in command:
-        speak(f'Opening your youtube')
+        engine_talk(f'Opening your youtube')
         print(f"Youtube is opening")
         webbrowser.open("https://www.youtube.com/")
 
     elif 'discord' in command:
-        speak(f'Opening your discord server')
+        engine_talk(f'Opening your discord server')
         print(f"Discord server is opening")
         webbrowser.open("https://discord.com/")
 
     elif 'whatsapp' in command:
-        speak(f'Opening your whatsapp')
+        engine_talk(f'Opening your whatsapp')
         print(f"whatsapp is opening")
         webbrowser.open("https://www.whatsapp.com/")
 
     else:
-        speak(f"Invalid command")
+        engine_talk(f"Invalid command")
         print(f"Try again.....")
 
 def schedule():
@@ -169,16 +185,16 @@ def schedule():
 
     if day in week_day.keys():
         print(f"{day} ..> {week_day[day]}")
-        speak(week_day[day])
+        engine_talk(week_day[day])
 
 def openApp(command):
     if "calculator" in command:
-        speak(f"opening calculator")
+        engine_talk(f"opening calculator")
         os.startfile('C:\Windows\System32\calc.exe')
 
     
     elif "notepad" in command:
-        speak(f"opening Notepad")
+        engine_talk(f"opening Notepad")
         os.startfile('C:\\Windows\\System32\\notepad.exe')
 
 
@@ -215,11 +231,11 @@ def condition ():
 
     elif ( percentage >= 30 ):
         print(f" we need to charge our laptop")
-        speak(f" we need to charge our laptop")
+        engine_talk(f" we need to charge our laptop")
 
     else :
         print (f"Warning ... you are running of your battery")
-        speak (f"Warning ... you are running of your battery")
+        engine_talk (f"Warning ... you are running of your battery")
 
 
 '''def engine_talk(query):
@@ -230,8 +246,8 @@ def condition ():
     )'''
 
 if __name__ == "__main__":
-    wishMe()
     
+    engine_talk("Good to talk with you again Boss")
     while True:
         #query = command().lower()
         query = input("Enter your command: ").lower()
@@ -243,15 +259,15 @@ if __name__ == "__main__":
 
         elif ("volume up" in query) or ("increase volume" in query):
             pyautogui.press("volumeup")
-            speak("volume increased")
+            engine_talk("volume increased")
 
         elif ("volume down" in query) or ("decrease volume" in query):
             pyautogui.press("volumedown")
-            speak("volume decreased")
+            engine_talk("volume decreased")
 
         elif ("volume mute" in query) or ("mute the sound" in query):
             pyautogui.press("volumemute")
-            speak("volume muted")
+            engine_talk("volume muted")
 
         elif ("open calculator" in query) or("open notepad" in query):
     
@@ -269,21 +285,20 @@ if __name__ == "__main__":
             for i in data['intents']:
                 if i['tag'] == tag:
                     print(np.random.choice(i['responses']))
-                    speak(np.random.choice(i['responses']))
+                    engine_talk(np.random.choice(i['responses']))
 
         elif ("open google" in query) :
             browsing(query)
                     
         elif ("system z condition" in query) or ("condition of the system" in query):
-            speak("Checking the system condition")
+            engine_talk("Checking the system condition")
             condition() 
 
         elif "exit" in query:
-            speak("Programm finished")
+            engine_talk("Programm finished")
             sys.exit()
 
     
         
-
 
 

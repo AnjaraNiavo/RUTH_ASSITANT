@@ -7,16 +7,16 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 
-with open("intents.json") as file:
+with open("json/intents.json") as file:
     data = json.load(file)
 
 
-model = load_model("chat_models.h5")
+model = load_model("model/chat_models.h5")
 
-with open("tokenizer.pkl","rb") as f:
+with open("model/tokenizer.pkl","rb") as f:
     tokenizer = pickle.load(f)
 
-with open("label_encoder.pkl","rb") as encoder_file:
+with open("model/label_encoder.pkl","rb") as encoder_file:
     label_encoder = pickle.load(encoder_file)
 
 
