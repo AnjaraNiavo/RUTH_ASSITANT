@@ -1,9 +1,9 @@
-pip install pyttsx3
-pip install SpeechRecognition
-pip install pyaudio
-pip install pyautogui
-pip install tensorflow
-pip install requirements.txt
-pip install psutil
-pip install elevenlabs requests
-pip install python-dotenv
+pyttsx3
+SpeechRecognition
+pyaudio
+pyautogui
+tensorflow
+psutil
+numpy
+flask
+flask-cors

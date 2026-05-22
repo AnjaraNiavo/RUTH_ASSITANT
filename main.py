@@ -14,17 +14,11 @@ import random
 import numpy as np
 import psutil
 
-from elevenlabs import generate, play
-from elevenlabs import set_api_key
-from api_key import ELEVENLABS_API_KEY
 
 from os import system
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-
-
-set_api_key(ELEVENLABS_API_KEY)
 
 
 with open("json/intents.json") as file:
@@ -39,21 +33,6 @@ with open("model/tokenizer.pkl","rb") as f:
 with open("model/label_encoder.pkl","rb") as encoder_file:
     label_encoder = pickle.load(encoder_file)
 
-def engine_talk(text):
-
-    try:
-        audio = generate(
-            text = text,
-            voice= "7NcHAzFqfCpxFyONh7M8",
-            model= "eleven_multilingual_v2",
-            
-        )
-        play(audio)
-    
-    except Exception as e:
-        print("Erreur ElevenLabs",e)
-
-        speak(text)
 
 
 def initialize_engine ():
@@ -134,39 +113,39 @@ def wishMe():
     day = call_day()
 
     if (hour >= 0) and (hour <= 12) and ('AM' in t):
-        engine_talk(f"Good morning Sir, it's {day} and the time is {t}")
+        speak(f"Good morning Sir, it's {day} and the time is {t}")
 
     elif(hour >= 12) and (hour <= 16) and ('AM' in t):
 
-        engine_talk(f"Good afternoon Sir, it's {day} and the time is {t}")
+        speak(f"Good afternoon Sir, it's {day} and the time is {t}")
 
     else:
-        engine_talk(f"Good evening Sir, it's {day} and the time is {t}")
+        speak(f"Good evening Sir, it's {day} and the time is {t}")
 
 
 def social_media(command):
     if 'facebook' in command:
-        engine_talk(f'Opening your facebook')
+        speak(f'Opening your facebook')
         print(f"Facebook is opening")
         webbrowser.open("https://www.facebook.com/")
 
     elif 'youtube' in command:
-        engine_talk(f'Opening your youtube')
+        speak(f'Opening your youtube')
         print(f"Youtube is opening")
         webbrowser.open("https://www.youtube.com/")
 
     elif 'discord' in command:
-        engine_talk(f'Opening your discord server')
+        speak(f'Opening your discord server')
         print(f"Discord server is opening")
         webbrowser.open("https://discord.com/")
 
     elif 'whatsapp' in command:
-        engine_talk(f'Opening your whatsapp')
+        speak(f'Opening your whatsapp')
         print(f"whatsapp is opening")
         webbrowser.open("https://www.whatsapp.com/")
 
     else:
-        engine_talk(f"Invalid command")
+        speak(f"Invalid command")
         print(f"Try again.....")
 
 def schedule():
@@ -185,16 +164,16 @@ def schedule():
 
     if day in week_day.keys():
         print(f"{day} ..> {week_day[day]}")
-        engine_talk(week_day[day])
+        speak(week_day[day])
 
 def openApp(command):
     if "calculator" in command:
-        engine_talk(f"opening calculator")
+        speak(f"opening calculator")
         os.startfile('C:\Windows\System32\calc.exe')
 
     
     elif "notepad" in command:
-        engine_talk(f"opening Notepad")
+        speak(f"opening Notepad")
         os.startfile('C:\\Windows\\System32\\notepad.exe')
 
 
@@ -231,74 +210,154 @@ def condition ():
 
     elif ( percentage >= 30 ):
         print(f" we need to charge our laptop")
-        engine_talk(f" we need to charge our laptop")
+        speak(f" we need to charge our laptop")
 
     else :
         print (f"Warning ... you are running of your battery")
-        engine_talk (f"Warning ... you are running of your battery")
+        speak (f"Warning ... you are running of your battery")
 
 
-'''def engine_talk(query):
+'''def speak(query):
     audio = generate(
         text = query,
         voice_id= "7NcHAzFqfCpxFyONh7M8",
         model= "eleven_nonolinual_v1"
     )'''
 
+def get_system_status():
+    """Retourne l'état CPU/batterie pour l'interface."""
+    usage = int(psutil.cpu_percent(interval=0.5))
+    battery = psutil.sensors_battery()
+    percentage = int(battery.percent) if battery else 0
+    plugged = battery.power_plugged if battery else False
+
+    if percentage >= 70:
+        power_msg = "Enough power to continue"
+    elif percentage >= 30:
+        power_msg = "Consider charging the laptop"
+    else:
+        power_msg = "Warning: battery is low"
+
+    return {
+        "cpu": usage,
+        "battery": percentage,
+        "plugged": plugged,
+        "power_message": power_msg,
+    }
+
+
+def process_command(query, speak_response=True):
+    """
+    Traite une commande et renvoie un dict pour l'API / l'interface web.
+    speak_response=False évite la synthèse vocale (réponse texte uniquement).
+    """
+    query = (query or "").lower().strip()
+    result = {"query": query, "response": "", "type": "unknown", "success": True, "exit": False}
+
+    if not query:
+        result["success"] = False
+        result["response"] = "Empty command"
+        return result
+
+    def say(text):
+        if speak_response:
+            speak(text)
+        result["response"] = text
+
+    if ('facebook' in query) or ('youtube' in query) or ('whatsapp' in query) or ('discord' in query):
+        social_media(query)
+        result["type"] = "social_media"
+        if not result["response"]:
+            result["response"] = f"Opening {query}"
+
+    elif ('university time table' in query) or ("schedule" in query):
+        schedule()
+        result["type"] = "schedule"
+        if not result["response"]:
+            result["response"] = "Schedule displayed"
+
+    elif ("volume up" in query) or ("increase volume" in query):
+        pyautogui.press("volumeup")
+        say("volume increased")
+        result["type"] = "volume"
+
+    elif ("volume down" in query) or ("decrease volume" in query):
+        pyautogui.press("volumedown")
+        say("volume decreased")
+        result["type"] = "volume"
+
+    elif ("volume mute" in query) or ("mute the sound" in query):
+        pyautogui.press("volumemute")
+        say("volume muted")
+        result["type"] = "volume"
+
+    elif ("open calculator" in query) or ("open notepad" in query):
+        openApp(query)
+        result["type"] = "app"
+        if not result["response"]:
+            result["response"] = f"Opening {query}"
+
+    elif ("close calculator" in query) or ("close notepad" in query):
+        closeApp(query)
+        result["type"] = "app"
+        if not result["response"]:
+            result["response"] = f"Closing {query}"
+
+    elif ("what" in query) or ("how" in query) or ("hi" in query) or ("thanks" in query) or ("hello" in query) or ("who" in query):
+        padded_sequences = pad_sequences(tokenizer.texts_to_sequences([query]), maxlen=20, truncating='post')
+        pred = model.predict(padded_sequences, verbose=0)
+        tag = label_encoder.inverse_transform([np.argmax(pred)])[0]
+
+        for intent in data['intents']:
+            if intent['tag'] == tag:
+                response_text = np.random.choice(intent['responses'])
+                print(response_text)
+                say(response_text)
+                result["type"] = "chat"
+                result["tag"] = tag
+                break
+
+    elif "open google" in query:
+        browsing(query)
+        result["type"] = "browser"
+        if not result["response"]:
+            result["response"] = "Opening Google search"
+
+    elif ("system z condition" in query) or ("condition of the system" in query):
+        if speak_response:
+            speak("Checking the system condition")
+        status = get_system_status()
+        result["type"] = "system"
+        result["system"] = status
+        msg = (
+            f"CPU is at {status['cpu']}%. "
+            f"Battery is {status['battery']}%. {status['power_message']}"
+        )
+        print(msg)
+        if speak_response:
+            speak(msg)
+        result["response"] = msg
+
+    elif "exit" in query:
+        say("Program finished")
+        result["type"] = "exit"
+        result["exit"] = True
+
+    else:
+        result["success"] = False
+        result["response"] = "Command not recognized. Try hello, schedule, or system condition."
+
+    return result
+
+
 if __name__ == "__main__":
-    
-    engine_talk("Good to talk with you again Boss")
+
+    speak("Good to talk with you again Boss")
     while True:
-        #query = command().lower()
-        query = input("Enter your command: ").lower()
-        if ('facebook' in query) or ('youtube' in query) or ('whatsapp' in query) or ('discord' in query):
-            social_media (query)
-
-        elif ('university time table' in query) or ("schedule" in query):
-            schedule()
-
-        elif ("volume up" in query) or ("increase volume" in query):
-            pyautogui.press("volumeup")
-            engine_talk("volume increased")
-
-        elif ("volume down" in query) or ("decrease volume" in query):
-            pyautogui.press("volumedown")
-            engine_talk("volume decreased")
-
-        elif ("volume mute" in query) or ("mute the sound" in query):
-            pyautogui.press("volumemute")
-            engine_talk("volume muted")
-
-        elif ("open calculator" in query) or("open notepad" in query):
-    
-            openApp(query)
-        
-        elif ("close calculator" in query) or("close notepad" in query):
-    
-            closeApp(query)
-
-        elif ("what" in query) or ("how" in query) or ("hi" in query) or ("thanks" in query) or ("hello" in query) or ("who" in query):
-            padded_sequences = pad_sequences(tokenizer.texts_to_sequences([query]),maxlen= 20, truncating='post')
-            result = model.predict(padded_sequences)
-            tag = label_encoder.inverse_transform([np.argmax(result)])[0]
-
-            for i in data['intents']:
-                if i['tag'] == tag:
-                    print(np.random.choice(i['responses']))
-                    engine_talk(np.random.choice(i['responses']))
-
-        elif ("open google" in query) :
-            browsing(query)
-                    
-        elif ("system z condition" in query) or ("condition of the system" in query):
-            engine_talk("Checking the system condition")
-            condition() 
-
-        elif "exit" in query:
-            engine_talk("Programm finished")
+        # query = command()
+        query = input("Enter your command: ")
+        outcome = process_command(query)
+        if outcome.get("exit"):
             sys.exit()
-
-    
-        
 
 

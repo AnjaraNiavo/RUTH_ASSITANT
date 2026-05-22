@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #020617;
+}
+
+/* Grille HUD type Iron Man */
+.hud-grid {
+  background-color: #020617;
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.map-glow path,
+.map-glow line {
+  filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.5));
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulse-core {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 24s linear infinite;
+}
+
+.animate-spin-mid {
+  animation: spin-slow 16s linear infinite;
+}
+
+.animate-spin-fast {
+  animation: spin-reverse 10s linear infinite;
+}
+
+.animate-pulse-core {
+  animation: pulse-core 3s ease-in-out infinite;
+}
+
+.glass-panel {
+  background: rgba(2, 6, 23, 0.55);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  box-shadow:
+    inset 0 0 40px rgba(34, 211, 238, 0.03),
+    0 0 24px rgba(34, 211, 238, 0.06);
+  backdrop-filter: blur(8px);
+}
+
+.neon-text {
+  text-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(34, 211, 238, 0.35);
+}
