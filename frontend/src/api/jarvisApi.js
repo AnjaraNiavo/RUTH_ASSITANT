@@ -6,7 +6,7 @@ export async function fetchSystemStatus() {
   return res.json();
 }
 
-export async function sendCommand(query, speak = false) {
+export async function sendCommand(query, speak = true) {
   const res = await fetch(`${API_BASE}/command`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

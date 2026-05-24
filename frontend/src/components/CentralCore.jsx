@@ -1,10 +1,8 @@
-export default function CentralCore({ active = false, onClick }) {
+export default function CentralCore({ active = false }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group relative flex h-[min(52vw,52vh)] w-[min(52vw,52vh)] max-h-[520px] max-w-[520px] cursor-pointer items-center justify-center focus:outline-none"
-      aria-label="Noyau JARVIS — ouvrir le terminal"
+    <div
+      className="relative flex h-[min(52vw,52vh)] w-[min(52vw,52vh)] max-h-[520px] max-w-[520px] items-center justify-center"
+      aria-hidden
     >
       {/* Anneaux externes */}
       {[1, 2, 3, 4, 5].map((ring) => (
@@ -75,9 +73,6 @@ export default function CentralCore({ active = false, onClick }) {
         <div className="absolute inset-[18%] rounded-full bg-white/30 blur-sm" />
       </div>
 
-      <span className="pointer-events-none absolute -bottom-8 font-hud text-[9px] uppercase tracking-[0.4em] text-cyan-400/40 opacity-0 transition group-hover:opacity-100">
-        Interface vocale
-      </span>
-    </button>
+    </div>
   );
 }
