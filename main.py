@@ -261,7 +261,7 @@ if __name__ == "__main__":
     
             closeApp(query)
 
-        elif ("what" in query) or ("how" in query) or ("hi" in query) or ("thanks" in query) or ("hello" in query) or ("who" in query):
+        elif ("what" in query) or ("how" in query) or ("hi" in query) or ("thanks" in query) or ("hello" in query) or ("who" in query) or ("jokes" in query):
             padded_sequences = pad_sequences(tokenizer.texts_to_sequences([query]),maxlen= 20, truncating='post')
             result = model.predict(padded_sequences)
             tag = label_encoder.inverse_transform([np.argmax(result)])[0]

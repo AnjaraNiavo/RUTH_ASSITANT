@@ -27,7 +27,7 @@ export default function CircularGauge({
           cy={cy}
           r={r}
           fill="none"
-          stroke="rgba(34, 211, 238, 0.12)"
+          stroke="rgba(239, 68, 68, 0.12)"
           strokeWidth={stroke}
         />
         <circle
@@ -41,26 +41,26 @@ export default function CircularGauge({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           style={{
-            filter: "drop-shadow(0 0 6px rgba(34, 211, 238, 0.8))",
+            filter: "drop-shadow(0 0 6px rgba(239, 68, 68, 0.8))",
             transition: "stroke-dashoffset 0.8s ease",
           }}
         />
         <defs>
           <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#22d3ee" />
-            <stop offset="100%" stopColor="#38bdf8" />
+            <stop offset="0%" stopColor="#ef4444" />
+            <stop offset="100%" stopColor="#f97316" />
           </linearGradient>
         </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="font-hud text-[7px] uppercase tracking-[0.2em] text-cyan-400/70">
+        <span className="font-hud text-[7px] uppercase tracking-[0.2em] text-red-400/70">
           {label}
         </span>
         <span className="font-hud text-xl font-bold leading-none text-white neon-text">
           {pct.toFixed(1)}%
         </span>
         {subLabel && (
-          <span className="mt-0.5 font-mono text-[8px] text-cyan-300/50">
+          <span className="mt-0.5 font-mono text-[8px] text-red-300/50">
             {subLabel}
           </span>
         )}

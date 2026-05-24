@@ -5,6 +5,7 @@ Réutilise les fonctions de main (speak, social_media, modèle NLU, etc.).
 
 import io
 import sys
+import threading
 from contextlib import redirect_stdout
 
 import numpy as np
@@ -27,12 +28,24 @@ _voice_enabled = True
 
 
 def _capture_speak(text):
-    """Enregistre le texte et appelle speak() de main.py si la voix est activée."""
-    if not text:
-        return
-    _spoken_parts.append(str(text))
-    if _voice_enabled:
-        _ORIGINAL_SPEAK(text)
+    """Enregistre le texte (la voix est lancée en arrière-plan à la fin)."""
+    if text:
+        _spoken_parts.append(str(text))
+
+
+def _start_voice_playback():
+    """Lit les réponses à voix haute sans bloquer la réponse HTTP."""
+    if not _voice_enabled or not _spoken_parts:
+        return 0
+
+    parts = list(_spoken_parts)
+
+    def _run():
+        for part in parts:
+            _ORIGINAL_SPEAK(part)
+
+    threading.Thread(target=_run, daemon=True).start()
+    return sum(len(p) for p in parts) * 85
 
 
 def get_system_status():
@@ -178,6 +191,10 @@ def execute_command(query, speak=True):
         result["success"] = False
         result["response"] = f"Error: {exc}"
         print(result["response"], file=sys.stderr)
+
+    duration = _start_voice_playback()
+    if duration:
+        result["speak_duration_ms"] = max(1500, duration)
 
     return result
 

@@ -12,21 +12,20 @@ body,
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #020617;
+  background: #0a0a0a;
 }
 
-/* Grille HUD type Iron Man */
 .hud-grid {
-  background-color: #020617;
+  background-color: #0a0a0a;
   background-image:
-    linear-gradient(rgba(34, 211, 238, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(239, 68, 68, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 68, 68, 0.03) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
 .map-glow path,
 .map-glow line {
-  filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.5));
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.55));
 }
 
 @keyframes spin-slow {
@@ -42,6 +41,11 @@ body,
 @keyframes pulse-core {
   0%, 100% { opacity: 0.85; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.08); }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
 }
 
 .animate-spin-slow {
@@ -60,22 +64,26 @@ body,
   animation: pulse-core 3s ease-in-out infinite;
 }
 
+.animate-scan {
+  animation: scan 10s linear infinite;
+}
+
 .glass-panel {
-  background: rgba(2, 6, 23, 0.55);
-  border: 1px solid rgba(34, 211, 238, 0.2);
+  background: rgba(10, 10, 10, 0.75);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   box-shadow:
-    inset 0 0 40px rgba(34, 211, 238, 0.03),
-    0 0 24px rgba(34, 211, 238, 0.06);
-  backdrop-filter: blur(8px);
+    inset 0 0 40px rgba(239, 68, 68, 0.04),
+    0 0 24px rgba(239, 68, 68, 0.08);
+  backdrop-filter: blur(10px);
 }
 
 .neon-text {
-  text-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+  text-shadow: 0 0 14px rgba(239, 68, 68, 0.65);
 }
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 3px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(34, 211, 238, 0.35);
+  background: rgba(239, 68, 68, 0.4);
 }

@@ -16,29 +16,43 @@ export default function MessageInput({
   };
 
   return (
-    <div className="absolute bottom-4 left-1/2 z-40 w-[min(640px,92vw)] -translate-x-1/2">
-      {/* Historique des messages */}
+    <div className="absolute bottom-4 right-4 z-40 flex w-[min(400px,38vw)] flex-col items-end">
       {logs.length > 0 && (
-        <div className="custom-scrollbar glass-panel mb-2 max-h-32 space-y-2 overflow-y-auto rounded-sm px-4 py-3">
+        <div className="custom-scrollbar glass-panel mb-2 max-h-36 w-full space-y-2 overflow-y-auto rounded-sm px-4 py-3">
           {logs.slice(0, 6).map((entry) => (
-            <div key={entry.id} className="border-l border-cyan-500/30 pl-2 font-mono text-[11px]">
-              <p className="text-cyan-500/60">&gt; {entry.query}</p>
-              <p className="text-white/85">{entry.response}</p>
+            <div
+              key={entry.id}
+              className="border-l border-red-500/40 pl-2 font-mono text-[11px]"
+            >
+              <p className="text-red-400/60">&gt; {entry.query}</p>
+              <p
+                className={
+                  entry.pending
+                    ? "text-orange-300/60 animate-pulse"
+                    : "text-white/90"
+                }
+              >
+                {entry.pending ? "…" : entry.response}
+              </p>
             </div>
           ))}
         </div>
       )}
 
-      <div className="glass-panel rounded-sm px-4 py-3">
+      <div className="glass-panel w-full rounded-sm px-4 py-3">
         <div
           className={`mb-2 flex items-center gap-2 font-mono text-[9px] uppercase tracking-wider ${
-            connected ? "text-emerald-400/80" : "text-red-400/80"
+            connected ? "text-red-400/90" : "text-red-600/80"
           }`}
         >
           <span
-            className={`h-1.5 w-1.5 rounded-full ${connected ? "bg-emerald-400 shadow-[0_0_6px_#34d399]" : "bg-red-500"}`}
+            className={`h-1.5 w-1.5 rounded-full ${
+              connected
+                ? "bg-red-500 shadow-[0_0_8px_#ef4444]"
+                : "bg-red-900"
+            }`}
           />
-          {connected ? "Agent connecté · réponse vocale active" : "Hors ligne — lancez python server.py"}
+          {connected ? "Agent connected" : "offline — python server.py"}
         </div>
 
         <form
@@ -52,16 +66,16 @@ export default function MessageInput({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Envoyer un message à JARVIS…"
+            placeholder="Send a message to RUTH..."
             disabled={!connected || loading}
-            className="flex-1 border border-cyan-500/30 bg-black/50 px-4 py-2.5 font-mono text-sm text-cyan-50 placeholder:text-cyan-500/35 outline-none transition focus:border-cyan-400/70 focus:shadow-[0_0_12px_rgba(34,211,238,0.2)] disabled:opacity-40"
+            className="flex-1 border border-red-500/30 bg-black/60 px-4 py-2.5 font-mono text-sm text-red-50 placeholder:text-red-500/35 outline-none transition focus:border-red-400/70 focus:shadow-[0_0_12px_rgba(239,68,68,0.2)] disabled:opacity-40"
           />
           <button
             type="submit"
             disabled={!connected || loading}
-            className="shrink-0 border border-cyan-500/50 bg-cyan-500/10 px-5 py-2.5 font-hud text-[10px] uppercase tracking-[0.2em] text-cyan-300 transition hover:bg-cyan-500/20 hover:shadow-[0_0_14px_rgba(34,211,238,0.25)] disabled:opacity-40"
+            className="shrink-0 border border-red-500/50 bg-red-500/10 px-4 py-2.5 font-hud text-[10px] uppercase tracking-[0.15em] text-red-200 transition hover:bg-red-500/20 hover:shadow-[0_0_14px_rgba(239,68,68,0.3)] disabled:opacity-40"
           >
-            {loading ? "…" : "Envoyer"}
+            {loading ? "…" : "SEND"}
           </button>
         </form>
       </div>

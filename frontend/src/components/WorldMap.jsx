@@ -15,28 +15,22 @@ import {
 const GEO_URL =
   "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
-/**
- * @param {"background" | "inset" | "full"} variant
- */
-export default function WorldMap({
-  variant = "full",
-  className = "",
-}) {
+const STROKE = "#ef4444";
+
+export default function WorldMap({ variant = "full", className = "" }) {
   const isBg = variant === "background";
   const isInset = variant === "inset";
 
-  const scale = isBg ? 155 : isInset ? 95 : 140;
-  const width = isBg ? 1100 : isInset ? 320 : 980;
-  const height = isBg ? 520 : isInset ? 160 : 520;
-  const stroke = isBg ? "#22d3ee" : "#2dd4bf";
-  const strokeW = isBg ? 0.25 : 0.4;
+  const scale = isBg ? 160 : isInset ? 100 : 140;
+  const width = isBg ? 1100 : isInset ? 360 : 980;
+  const height = isBg ? 540 : isInset ? 175 : 520;
+  const strokeW = isBg ? 0.28 : 0.45;
   const showRipples = !isBg;
-  const showLines = true;
 
   return (
     <div
       className={`map-glow h-full w-full ${className}`}
-      style={{ opacity: isBg ? 0.35 : isInset ? 1 : 1 }}
+      style={{ opacity: isBg ? 0.4 : 1 }}
     >
       <ComposableMap
         projection="geoMercator"
@@ -52,7 +46,7 @@ export default function WorldMap({
                 key={geo.rsmKey}
                 geography={geo}
                 fill="transparent"
-                stroke={stroke}
+                stroke={STROKE}
                 strokeWidth={strokeW}
                 style={{
                   default: { outline: "none" },
@@ -64,17 +58,16 @@ export default function WorldMap({
           }
         </Geographies>
 
-        {showLines &&
-          CONNECTION_LINES.map((line, idx) => (
-            <Line
-              key={idx}
-              from={line.from}
-              to={line.to}
-              stroke={line.stroke}
-              strokeWidth={isInset ? 0.5 : 0.6}
-              strokeLinecap="round"
-            />
-          ))}
+        {CONNECTION_LINES.map((line, idx) => (
+          <Line
+            key={idx}
+            from={line.from}
+            to={line.to}
+            stroke={line.stroke}
+            strokeWidth={isInset ? 0.55 : 0.65}
+            strokeLinecap="round"
+          />
+        ))}
 
         {showRipples &&
           RIPPLE_HUBS.map((hub, idx) => (
@@ -86,9 +79,9 @@ export default function WorldMap({
         {ALERT_POINTS.map((point, idx) => (
           <Marker key={idx} coordinates={point.coords}>
             <circle
-              r={isInset ? point.size * 0.7 : point.size}
+              r={isInset ? point.size * 0.75 : point.size}
               fill={point.color}
-              style={{ filter: `drop-shadow(0 0 4px ${point.color})` }}
+              style={{ filter: `drop-shadow(0 0 5px ${point.color})` }}
             />
           </Marker>
         ))}
